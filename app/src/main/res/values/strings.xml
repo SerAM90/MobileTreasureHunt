@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Mobile Treasure Hunt</string>
+    <string name="title">Fayetteville Mobile Hunt</string> <!--//title ->RulePage-->
+    <string name="clue1_circa1800">To find a place where elegance and history meet, Seek the charm of the past with flavors so sweet. Downtown you will wonder, where time takes a bow, In the heart of Fayetteville, circa then is now.</string> <!--//first clue ->CluePage//circa1800-->
+    <string name="clue2_sweetpalette">Follow the scent of sugar and delight, where every color paints a treat, on a downtown street.</string> <!--//second clue ->CluePage-->
+    <string name="hint1_circa1800">In downtowns embrace, where history and luxury entwine, discover a feast set around the year 1800 divine.</string> <!--//first hint ->CluePage-->
+    <string name="hint2_circa1800">Whether you dine under the stars or inside with style, circa a historic time, your taste buds will smile.</string> <!--//hint two ->Clue Page-->
+    <string name="hint1_sweetpalette">Where are meets sugar and cakes are a prize, downtown holds a sweet surprise.</string> <!--//hint three ->Clue Page-->
+    <string name="hint2_sweetpalette">Seek the spot to shop where colorful macaroons and creamy cheesecake combine, a downtown delight that is artistic and fine.</string>
+    <string name="popup">Opps! This is not the place! Hurry, hurry, time is ticking!</string> <!--//wrong location pop-up ->Clue Page-->
+    <string name="congratulations">Congratulations! You solved all the clues, and have found the Downtown Fayetteville Market House</string> <!--//congrats page ->TreasureHuntCompleted-->
+    <string name="start_button">Start</string>
+
 </resources>
