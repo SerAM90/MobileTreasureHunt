@@ -29,12 +29,12 @@ fun MobileTreasureHuntRules() {
         Text("• Once you have solved both clues and located the treasure, your ‘Found it!’ button will take you to the endgame page!")
         Text("• And most important, HAVE FUN!")
 
-        Button(
-            onClick = {
-                // Handle button click
-            }
-        ) {
-            Text(text = 'Start')
-        }
+//        Button(
+//            onClick = {
+//                // Handle button click
+//            }
+//        ) {
+//            Text(text = 'Start')
+//        }
     }
 }

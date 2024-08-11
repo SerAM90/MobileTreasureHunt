@@ -1,9 +1,19 @@
 package com.example.mobiletreasurehunt.ui.theme
 
+import com.example.mobiletreasurehunt.model.Clue
+
 data class MobileUIState (
-    val currentClue: String = "",
-    val currentClue: Int = 1,
-    val currentHint: Int = 1,
-    val isFound: Boolean = false,
-    val isFinalClue: Boolean = false,
+    var currentClue: Clue,
+    var currentCluePosition: Int = 0,
+    var currentHint: Int = 0,
+    var isFound: Boolean = false,
+    var isFinalClue: Boolean = false,
+    var isHintDisplayed: Boolean = false
     )
+    {
+        fun showHint(){
+        if(!isHintDisplayed) isHintDisplayed = true
+        //Advance Hint
+    }
+    
+}
