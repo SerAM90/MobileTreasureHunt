@@ -53,6 +53,9 @@ fun ClueSolvedCard(clue: Clue, name: String, currentCluePosition: Int, modifier:
         Image(painter = painterResource(id = clue.imageResourceID), contentDescription = stringResource(clue.clueName
         ))
         Text(
+            text = "Current Time: "
+        )
+        Text(
             text = "Clue Solved! " + stringResource(clue.clueName))
         Text(
             text = "Fun Fact: " + stringResource(clue.clueFunFact)

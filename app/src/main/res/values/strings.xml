@@ -8,7 +8,7 @@
     <string name="hint1_sweetpalette">Where art are meets sugar and cakes are a prize, downtown holds a sweet surprise.</string> <!--//hint three ->Clue Page-->
     <string name="hint2_sweetpalette">Seek the spot to shop where colorful macaroons and creamy cheesecake combine, a downtown delight that is artistic and fine.</string>
     <string name="popup">Opps! This is not the place! Hurry, hurry, time is ticking!</string> <!--//wrong location pop-up ->Clue Page-->
-    <string name="congratulations">Congratulations! You solved all the clues, and have found the Downtown Fayetteville Market House</string> <!--//congrats page ->TreasureHuntCompleted-->
+    <string name="congratulations">Congratulations! You solved all the clues, solved the Fayetteville Treasure Hunt, and found some delicious places to eat!</string> <!--//congrats page ->TreasureHuntCompleted-->
     <string name="start_button">Start</string>
     <string name="circa1800">Circa 1800</string>
     <string name="sweetpalette">The Sweet Palette</string>
