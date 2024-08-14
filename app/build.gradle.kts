@@ -50,7 +50,8 @@ android {
 }
 
 dependencies {
-            val lifecycle_version = "2.8.4"
+            implementation(libs.androidx.navigation.compose)
+    val lifecycle_version = "2.8.4"
         val arch_version = "2.2.0"
 
         // ViewModel
@@ -95,7 +96,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.media3.common)
     implementation(libs.androidx.lifecycle.runtime.compose.android)
-    implementation(libs.androidx.lifecycle.runtime.compose.desktop)
+    //implementation(libs.androidx.lifecycle.runtime.compose.desktop)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

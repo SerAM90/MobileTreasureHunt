@@ -14,6 +14,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.mobiletreasurehunt.data.Routes
 import com.example.mobiletreasurehunt.model.Clue
 import com.example.mobiletreasurehunt.ui.theme.MobileUIState
 import com.example.mobiletreasurehunt.ui.theme.MobileViewModel
@@ -22,6 +26,7 @@ import com.example.mobiletreasurehunt.ui.theme.MobileViewModel
 
 @Composable
 fun CluePage(
+    navController: NavHostController,
     mobileViewModel: MobileViewModel = viewModel()
 ) {
     val uiState by mobileViewModel.uiState.collectAsStateWithLifecycle()
@@ -36,6 +41,7 @@ fun CluePage(
             clue = uiState.currentClue,
             hintNumber = uiState.currentHint,
             currentCluePosition = uiState.currentCluePosition,
+            navController = navController,
             modifier = Modifier
         )
     }
@@ -46,6 +52,7 @@ fun ClueCard(
     clue: Clue,
     hintNumber: Int,
     currentCluePosition: Int, //clue Position
+    navController: NavHostController,
     modifier: Modifier
 ) {
     Column(modifier = modifier) {
@@ -63,7 +70,7 @@ fun ClueCard(
             }
             Button(
                 onClick = {
-                    // Handle button click
+                    navController.navigate(Routes.StartPage)
                 }
             ) {
                 Text(text = "Quit")
@@ -93,6 +100,7 @@ fun ClueCardPreview() {
         ),
         hintNumber = 0,
         currentCluePosition = 0, // Set a default value for the preview
+        navController = rememberNavController(),
         modifier = Modifier
     )
 }

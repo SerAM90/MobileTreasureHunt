@@ -12,9 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.mobiletreasurehunt.data.Routes
 
 @Composable
-fun MobileTreasureHuntRules() {
+fun MobileTreasureHuntRules(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -34,7 +39,7 @@ fun MobileTreasureHuntRules() {
         Row {
             Button(
                 onClick = {
-                    // Handle button click
+                    navController.navigate(Routes.CluePage)
                 }
             ) {
                 Text(text = "Start")
@@ -42,8 +47,8 @@ fun MobileTreasureHuntRules() {
         }
     }
 }
-@Preview(showBackground = true)
-@Composable
-fun StartPagePreview(){
-    MobileTreasureHuntRules()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun StartPagePreview(){
+//    MobileTreasureHuntRules()
+//}

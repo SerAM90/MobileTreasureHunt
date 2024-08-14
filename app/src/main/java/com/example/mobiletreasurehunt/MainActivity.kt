@@ -36,6 +36,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.core.app.ActivityCompat
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.mobiletreasurehunt.data.Routes
 
 class MainActivity : ComponentActivity() {
     private val locationPermissionRequest = registerForActivityResult(
@@ -69,10 +73,20 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+            val navController = rememberNavController()
+            NavHost(navController = navController, startDestination = Routes.StartPage) {
+                composable(Routes.StartPage,){
+                    MobileTreasureHuntRules(navController)
+                }
+                composable(Routes.CluePage,){
+                    CluePage(navController)
+                }
+                composable(Routes.ClueSolvedPage,){
+                    ClueSolvedPage()
+            }
         }
     }
 }
-
 
 @Composable
 fun RequestPermissionButton( modifier: Modifier) {
@@ -81,104 +95,4 @@ fun RequestPermissionButton( modifier: Modifier) {
     }){
         Text(text = "Check Permission")
     }
-}
-//class MainActivity : ComponentActivity() {
-//
-//    //private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
-//    private val requestPermissionLauncher =  registerForActivityResult(
-//            ActivityResultContracts.RequestPermission()
-//        ) { isGranted: Boolean ->
-//            if (isGranted) {
-//                Log.i("Permission: ", "Granted")
-//            } else {
-//                Log.i("Permission: ", "Denied")
-//                //requestPermission()
-//            }
-//        }
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//
-//
-//        // Call the requestPermission method here
-//        requestPermission()
-//
-//        setContent {
-//            MobileTreasureHuntTheme {
-//                Surface(
-//                    modifier = Modifier.fillMaxSize(),
-//                    color = MaterialTheme.colorScheme.background
-//                ) {
-//                    // Display the actual app
-//                }
-//            }
-//       }
-//          requestPermissionLauncher = registerForActivityResult(
-//            ActivityResultContracts.RequestPermission()
-//        ) { isGranted: Boolean ->
-//            if (isGranted) {
-//                Log.i("Permission: ", "Granted")
-//            } else {
-//                Log.i("Permission: ", "Denied")
-//                //requestPermission()
-//            }
-//        }
-//        requestPermission()
-//    }
-//
-//    private fun requestPermission() {
-//        when {
-//            ContextCompat.checkSelfPermission(
-//                this,
-//                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-//            ) == PackageManager.PERMISSION_GRANTED -> {
-//                // Permission is granted
-//                Log.i("Permission: ", "Granted")
-//            }
-//
-//            ActivityCompat.shouldShowRequestPermissionRationale(
-//                this,
-//                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-//            ) -> {
-//                Log.i("Permission: ","Attempting to show dialog to access location")
-//                // Create and show an AlertDialog in Kotlin
-//                AlertDialog.Builder(this)
-//                    .setMessage("This application requires access to your location in order to function properly.")
-//                    .setPositiveButton("OK") { _, _ ->
-//                        // Request the permission after showing the rationale
-//                        Log.i("Permission: ","Attempting to show requestPermissionLauncher")
-//                        requestPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-//                    }
-//                    .setNegativeButton("Cancel") { dialog, _ ->
-//                        //cancel
-//                        dialog.dismiss()
-//                    }
-//                    .create()
-//                    .show()
-//
-//                Log.i("Permission: ", "Rationale Needed")
-//            }
-//
-//            else -> {
-//                requestPermissionLauncher.launch(
-//                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
-//                )
-//            }
-//        }
-//    }
-//}
-
-//@Composable
-//fun Greeting(name: String, modifier: Modifier = Modifier) {
-//    Text(
-//        text = "Hello $name!",
-//        modifier = modifier
-//    )
-//}
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun GreetingPreview() {
-//    MobileTreasureHuntTheme {
-//        Greeting("Android")
-//    }
-//}
+}}
