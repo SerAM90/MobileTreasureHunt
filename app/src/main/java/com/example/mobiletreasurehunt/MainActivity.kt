@@ -1,45 +1,29 @@
 package com.example.mobiletreasurehunt
 
-import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
-import com.example.mobiletreasurehunt.ui.theme.MobileTreasureHuntTheme
-import android.Manifest
-import android.app.AlertDialog
-import android.util.Log
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResultLauncher
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.core.app.ActivityCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mobiletreasurehunt.data.Routes
+import com.example.mobiletreasurehunt.ui.theme.MobileTreasureHuntTheme
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
 
 class MainActivity : ComponentActivity() {
     private val locationPermissionRequest = registerForActivityResult(
@@ -84,6 +68,9 @@ class MainActivity : ComponentActivity() {
                 composable(Routes.ClueSolvedPage,){
                     ClueSolvedPage()
             }
+                composable(Routes.TreasureHuntCompletedPage,){
+                    TreasureHuntCompletedPage(navController)
+                }
         }
     }
 }

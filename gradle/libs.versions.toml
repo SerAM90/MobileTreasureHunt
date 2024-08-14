@@ -13,6 +13,7 @@ media3Common = "1.4.0"
 lifecycleRuntimeComposeAndroid = "2.8.4"
 lifecycleRuntimeComposeDesktop = "2.8.4"
 navigationCompose = "2.7.7"
+playServicesLocation = "21.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,6 +35,7 @@ androidx-media3-common = { group = "androidx.media3", name = "media3-common", ve
 androidx-lifecycle-runtime-compose-android = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose-android", version.ref = "lifecycleRuntimeComposeAndroid" }
 androidx-lifecycle-runtime-compose-desktop = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose-desktop", version.ref = "lifecycleRuntimeComposeDesktop" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

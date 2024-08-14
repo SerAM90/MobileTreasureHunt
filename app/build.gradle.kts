@@ -51,6 +51,7 @@ android {
 
 dependencies {
             implementation(libs.androidx.navigation.compose)
+    implementation(libs.play.services.location)
     val lifecycle_version = "2.8.4"
         val arch_version = "2.2.0"
 
@@ -85,6 +86,7 @@ dependencies {
 
         // optional - Test helpers for Lifecycle runtime
         testImplementation ("androidx.lifecycle:lifecycle-runtime-testing:$lifecycle_version")
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

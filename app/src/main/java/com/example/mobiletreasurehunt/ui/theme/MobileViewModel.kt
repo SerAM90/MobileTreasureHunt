@@ -1,13 +1,12 @@
 package com.example.mobiletreasurehunt.ui.theme
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.mobiletreasurehunt.data.CluesDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import androidx.compose.runtime.setValue
+
+
+
 
 class MobileViewModel: ViewModel() {
     //MobileUIState
@@ -20,7 +19,7 @@ class MobileViewModel: ViewModel() {
     }
 fun checkClue(){
     //Get users current position
-    //check and use haversin formula from kotlin //https://gist.github.com/jferrao/cb44d09da234698a7feee68ca895f491
+    //check and use haversine formula from kotlin //https://gist.github.com/jferrao/cb44d09da234698a7feee68ca895f491
     //if in location show next clue, if last clue go to TreasureHuntCompleted Screen
 }
 
