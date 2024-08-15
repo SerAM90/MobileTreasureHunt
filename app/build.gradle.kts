@@ -99,6 +99,8 @@ dependencies {
     implementation(libs.androidx.media3.common)
     implementation(libs.androidx.lifecycle.runtime.compose.android)
     //implementation(libs.androidx.lifecycle.runtime.compose.desktop)
+      implementation(libs.androidx.concurrent.futures.ktx)
+    implementation(libs.kotlinx.coroutines.play.services)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

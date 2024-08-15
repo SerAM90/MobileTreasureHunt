@@ -8,10 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -19,11 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mobiletreasurehunt.data.Routes
 import com.example.mobiletreasurehunt.ui.theme.MobileTreasureHuntTheme
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
+
 
 class MainActivity : ComponentActivity() {
     private val locationPermissionRequest = registerForActivityResult(
@@ -50,10 +43,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             MobileTreasureHuntTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                        RequestPermissionButton(
-                            modifier = Modifier.padding(innerPadding)
-                        )
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+
                     }
                 }
             }
@@ -73,13 +64,6 @@ class MainActivity : ComponentActivity() {
                 }
         }
     }
-}
-
-@Composable
-fun RequestPermissionButton( modifier: Modifier) {
-    Button(onClick = {
-
-    }){
-        Text(text = "Check Permission")
-    }
 }}
+
+

@@ -1,26 +1,32 @@
 package com.example.mobiletreasurehunt
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import androidx.media3.common.util.Log
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.mobiletreasurehunt.data.Routes
 import com.example.mobiletreasurehunt.model.Clue
-import com.example.mobiletreasurehunt.ui.theme.MobileUIState
 import com.example.mobiletreasurehunt.ui.theme.MobileViewModel
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 
 
@@ -42,19 +48,27 @@ fun CluePage(
             hintNumber = uiState.currentHint,
             currentCluePosition = uiState.currentCluePosition,
             navController = navController,
-            modifier = Modifier
+            modifier = Modifier,
+            viewModelForPage = mobileViewModel
         )
     }
 }
 
+@SuppressLint("MissingPermission")
 @Composable
 fun ClueCard(
     clue: Clue,
     hintNumber: Int,
     currentCluePosition: Int, //clue Position
     navController: NavHostController,
-    modifier: Modifier
+    modifier: Modifier,
+    viewModelForPage: MobileViewModel
 ) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val locationClient = remember {
+        LocationServices.getFusedLocationProviderClient(context)
+    }
     Column(modifier = modifier) {
         Text(text = "Clue " + (currentCluePosition + 1)) // +1 because 0 based
 
@@ -64,6 +78,25 @@ fun ClueCard(
             Button(
                 onClick = {
                     // Handle button click
+                        scope.launch(Dispatchers.IO){
+                            val resultLocation = locationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY,
+                             CancellationTokenSource().token,).await()
+                             resultLocation?.let{ fetchedLocation ->
+                                 val result = viewModelForPage.checkClue(fetchedLocation.latitude,fetchedLocation.longitude)
+                                if(result && viewModelForPage.uiState.value.isFinalClue ){
+                                    //Navigate to final page
+                                    Log.i("Location","Result was ${result} and isFinalClue")
+                        
+                                }
+                                if(!result){
+                                    //Show a pop up saying they aren't close or something
+                                }
+                            }
+                    
+                        }
+                        if(viewModelForPage.uiState.value.isFinalClue && viewModelForPage.uiState.value.isFound){
+                            navController.navigate(Routes.TreasureHuntCompletedPage)
+                        }
                 }
             ) {
                 Text(text = "Found it")
@@ -101,6 +134,7 @@ fun ClueCardPreview() {
         hintNumber = 0,
         currentCluePosition = 0, // Set a default value for the preview
         navController = rememberNavController(),
-        modifier = Modifier
+        modifier = Modifier,
+        viewModelForPage = MobileViewModel()
     )
 }
