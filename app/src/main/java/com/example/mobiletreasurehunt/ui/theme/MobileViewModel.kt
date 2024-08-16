@@ -19,10 +19,10 @@ class MobileViewModel: ViewModel() {
     val uiState: StateFlow<MobileUIState> = _uiState.asStateFlow()
 
 
-    init{
-        quit()
-    }
-suspend fun checkClue(lat: Double, long: Double) : Boolean{
+    //init{
+      //  quit()
+   // }
+fun checkClue(lat: Double, long: Double) : Boolean{
     //Get users current position
     //check and use haversine formula from kotlin //https://gist.github.com/jferrao/cb44d09da234698a7feee68ca895f491
     //if in location show next clue, if last clue go to TreasureHuntCompleted Screen
@@ -30,28 +30,43 @@ suspend fun checkClue(lat: Double, long: Double) : Boolean{
     Log.i("location","haversine Result is ${haversineResult}")
     if(haversineResult <= 25){
         //Advance Clue
-        val currentClue = uiState.value.currentCluePosition
-         _uiState.value.isFound = true
-        if(currentClue > clues.size-1){
-            //We solved all the clues
-            _uiState.value.isFinalClue = true
-            _uiState.emit(_uiState.value)
-        }
-        else{
-            _uiState.value.currentClue = clues[currentClue +1]
-               Log.i("location","Advancing Clue")
-               //_uiState.emit()
-            val holderState = MobileUIState(clues[currentClue+1])
-            if((currentClue +1)== clues.size-1){
-                holderState.isFinalClue = true
-            }
-               _uiState.emit(holderState)
-        }
+//        val currentClue = uiState.value.currentCluePosition
+//         _uiState.value.isFound = true
+//        if(currentClue == clues.size){
+//            //We solved all the clues
+//            _uiState.value.isFinalClue = true
+//            _uiState.emit(_uiState.value)
+//        }
+//        else{
+//            _uiState.value.currentCluePosition = currentClue+1
+//            _uiState.value.currentClue = clues[currentClue +1]
+//               Log.i("location","Advancing Clue")
+//              // _uiState.emit(_uiState.value)
+//            val holderState = MobileUIState(clues[currentClue+1],_uiState.value.currentCluePosition)
+//            if((currentClue)== clues.size-1){
+//                holderState.isFinalClue = true
+//            }
+//               _uiState.emit(holderState)
+//        }
+        _uiState.value.isFound = true
         return true
     }
     else{
         return false
     }
+}
+
+fun advanceClue(){
+
+     val currentCluePosition = _uiState.value.currentCluePosition
+    if(currentCluePosition == clues.size-1){
+        return
+    }
+     _uiState.value.currentClue = clues[currentCluePosition+1]
+     _uiState.value.currentCluePosition = currentCluePosition+1
+    if(_uiState.value.currentCluePosition == clues.size -1) _uiState.value.isFinalClue = true
+    _uiState.value.isFound = false
+    //_uiState.emit(_uiState.value)
 }
 
 fun displayHint(){
@@ -67,7 +82,10 @@ fun haversineFormulaDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Dou
     return R * c
 }
 fun quit(){
-    _uiState.value = MobileUIState(clues[0])
+    _uiState.value.isFound = false
+    _uiState.value.currentClue = clues[0]
+    _uiState.value.currentCluePosition = 0
+    _uiState.value.isFinalClue = false
 
 }
 

@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mobiletreasurehunt.data.Routes
 import com.example.mobiletreasurehunt.ui.theme.MobileTreasureHuntTheme
+import com.example.mobiletreasurehunt.ui.theme.MobileViewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -36,6 +37,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val mobileViewModel = MobileViewModel()
         locationPermissionRequest.launch(arrayOf(
             android.Manifest.permission.ACCESS_FINE_LOCATION,
             android.Manifest.permission.ACCESS_COARSE_LOCATION))
@@ -54,13 +56,13 @@ class MainActivity : ComponentActivity() {
                     MobileTreasureHuntRules(navController)
                 }
                 composable(Routes.CluePage,){
-                    CluePage(navController)
+                    CluePage(navController, mobileViewModel)
                 }
                 composable(Routes.ClueSolvedPage,){
-                    ClueSolvedPage()
+                    ClueSolvedPage(navController, mobileViewModel)
             }
                 composable(Routes.TreasureHuntCompletedPage,){
-                    TreasureHuntCompletedPage(navController)
+                    TreasureHuntCompletedPage(navController, mobileViewModel)
                 }
         }
     }

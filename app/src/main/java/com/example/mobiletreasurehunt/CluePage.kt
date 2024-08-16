@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,7 +31,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
@@ -50,10 +50,15 @@ import kotlinx.coroutines.withContext
 @Composable
 fun CluePage(
     navController: NavHostController,
-    mobileViewModel: MobileViewModel = viewModel()
+    mobileViewModel: MobileViewModel,
 ) {
     val uiState by mobileViewModel.uiState.collectAsStateWithLifecycle()
-
+    LaunchedEffect(true){
+        if(uiState.isFound){
+                Log.i("Location","At the top of Clue Page. Advacning Clue")
+                mobileViewModel.advanceClue()
+        }
+    }
     Column(modifier = Modifier) {
         Text(
             text = "Clue " + (uiState.currentCluePosition + 1)
@@ -72,7 +77,7 @@ fun CluePage(
 }
 
 @OptIn(UnstableApi::class)
-@SuppressLint("MissingPermission")
+@SuppressLint("MissingPermission", "StateFlowValueCalledInComposition")
 @Composable
 fun ClueCard(
     clue: Clue,
@@ -87,8 +92,11 @@ fun ClueCard(
     val locationClient = remember {
         LocationServices.getFusedLocationProviderClient(context)
     }
+    val descriptionHolder = stringResource(viewModelForPage.uiState.value.currentClue.clueDescription)
     //dialog state
     val showDialog = remember {mutableStateOf(false)}
+    //hint state
+    //val currentHintDisplayed = remember {mutableStateOf(hintNumber)}
     Column(modifier = modifier) {
         Text(text = "Clue " + (currentCluePosition + 1)) // Display Clue Number
         Text(text = stringResource(clue.clueDescription)) // Display Clue Text
@@ -96,6 +104,8 @@ fun ClueCard(
         Row {
             Button(
                 onClick = {
+
+                    Log.i("Location","Checking Clue from Clue PAGE: cluePosition:${viewModelForPage.uiState.value.currentCluePosition}, clueDescription: ${descriptionHolder}")
                     // Start the coroutine to check the clue location
                     scope.launch(Dispatchers.IO) {
                         val resultLocation = locationClient.getCurrentLocation(
@@ -111,9 +121,18 @@ fun ClueCard(
 
                             withContext(Dispatchers.Main) {
                                 if (result && viewModelForPage.uiState.value.isFinalClue) {
+                                    Log.i("Location","Clue values: isFinalClue ${viewModelForPage.uiState.value.isFinalClue}")
                                     Log.i("Location", "Final clue found. Navigating to completion page.")
                                     navController.navigate(Routes.TreasureHuntCompletedPage)
-                                } else if (!result) {
+                                    return@withContext
+                                }
+                                if(result){
+                                    Log.i("Location","Got a match on clue location going to clue solved page")
+                                    navController.navigate(Routes.ClueSolvedPage){
+                                        launchSingleTop = true
+                                    }
+                                }
+                                else if (!result) {
                                     Log.i("Location", "Location is incorrect.")
                                     // Show some feedback to the user
                                     showDialog.value = true //pop-up
@@ -128,6 +147,7 @@ fun ClueCard(
 
             Button(
                 onClick = {
+                    viewModelForPage.quit()
                     navController.navigate(Routes.StartPage)
                 }
             ) {
@@ -142,7 +162,35 @@ fun ClueCard(
                 Text(text = "Hint")
             }
         }
-
+//        //hint dialogue
+//        if (showDialog.value) {
+//            Dialog(onDismissRequest = { showDialog.value = false
+//            if (currentHintDisplayed.value < clue.clueHint.size -1)
+//            currentHintDisplayed.value +=1}) {
+//                Box(
+//                    modifier = Modifier
+//                        .background(Color.White)
+//                        .padding(16.dp)
+//                        .clip(RoundedCornerShape(8.dp))
+//                ) {
+//                    Column(
+//                        horizontalAlignment = Alignment.CenterHorizontally,
+//                        modifier = Modifier.fillMaxWidth()
+//                    ) {
+//                        Text(text = stringResource(clue.clueHint[currentHintDisplayed.value]))
+//
+//                        IconButton(onClick = { showDialog.value = false }) {
+//                            Icon(
+//                                imageVector = Icons.Default.Close,
+//                                contentDescription = "Close pop-up"
+//                            )
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
         // Show the dialog if the state is true
         if (showDialog.value) {
             Dialog(onDismissRequest = { showDialog.value = false }) {
