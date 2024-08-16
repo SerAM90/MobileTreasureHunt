@@ -1,21 +1,38 @@
 package com.example.mobiletreasurehunt
 
 import android.annotation.SuppressLint
+import androidx.annotation.OptIn
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.util.Log
+import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.mobiletreasurehunt.data.Routes
@@ -27,7 +44,7 @@ import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-
+import kotlinx.coroutines.withContext
 
 
 @Composable
@@ -54,12 +71,13 @@ fun CluePage(
     }
 }
 
+@OptIn(UnstableApi::class)
 @SuppressLint("MissingPermission")
 @Composable
 fun ClueCard(
     clue: Clue,
     hintNumber: Int,
-    currentCluePosition: Int, //clue Position
+    currentCluePosition: Int,
     navController: NavHostController,
     modifier: Modifier,
     viewModelForPage: MobileViewModel
@@ -69,38 +87,45 @@ fun ClueCard(
     val locationClient = remember {
         LocationServices.getFusedLocationProviderClient(context)
     }
+    //dialog state
+    val showDialog = remember {mutableStateOf(false)}
     Column(modifier = modifier) {
-        Text(text = "Clue " + (currentCluePosition + 1)) // +1 because 0 based
-
-        Text(text = stringResource(clue.clueDescription)) //CLUE TEXT
+        Text(text = "Clue " + (currentCluePosition + 1)) // Display Clue Number
+        Text(text = stringResource(clue.clueDescription)) // Display Clue Text
 
         Row {
             Button(
                 onClick = {
-                    // Handle button click
-                        scope.launch(Dispatchers.IO){
-                            val resultLocation = locationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY,
-                             CancellationTokenSource().token,).await()
-                             resultLocation?.let{ fetchedLocation ->
-                                 val result = viewModelForPage.checkClue(fetchedLocation.latitude,fetchedLocation.longitude)
-                                if(result && viewModelForPage.uiState.value.isFinalClue ){
-                                    //Navigate to final page
-                                    Log.i("Location","Result was ${result} and isFinalClue")
-                        
-                                }
-                                if(!result){
-                                    //Show a pop up saying they aren't close or something
+                    // Start the coroutine to check the clue location
+                    scope.launch(Dispatchers.IO) {
+                        val resultLocation = locationClient.getCurrentLocation(
+                            Priority.PRIORITY_HIGH_ACCURACY,
+                            CancellationTokenSource().token
+                        ).await()
+
+                        resultLocation?.let { fetchedLocation ->
+                            val result = viewModelForPage.checkClue(
+                                fetchedLocation.latitude,
+                                fetchedLocation.longitude
+                            )
+
+                            withContext(Dispatchers.Main) {
+                                if (result && viewModelForPage.uiState.value.isFinalClue) {
+                                    Log.i("Location", "Final clue found. Navigating to completion page.")
+                                    navController.navigate(Routes.TreasureHuntCompletedPage)
+                                } else if (!result) {
+                                    Log.i("Location", "Location is incorrect.")
+                                    // Show some feedback to the user
+                                    showDialog.value = true //pop-up
                                 }
                             }
-                    
                         }
-                        if(viewModelForPage.uiState.value.isFinalClue && viewModelForPage.uiState.value.isFound){
-                            navController.navigate(Routes.TreasureHuntCompletedPage)
-                        }
+                    }
                 }
             ) {
                 Text(text = "Found it")
             }
+
             Button(
                 onClick = {
                     navController.navigate(Routes.StartPage)
@@ -108,12 +133,39 @@ fun ClueCard(
             ) {
                 Text(text = "Quit")
             }
+
             Button(
                 onClick = {
-                    // Handle button click
+                    // Handle hint functionality
                 }
             ) {
                 Text(text = "Hint")
+            }
+        }
+
+        // Show the dialog if the state is true
+        if (showDialog.value) {
+            Dialog(onDismissRequest = { showDialog.value = false }) {
+                Box(
+                    modifier = Modifier
+                        .background(Color.White)
+                        .padding(16.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = stringResource(R.string.popup))
+
+                        IconButton(onClick = { showDialog.value = false }) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Close pop-up"
+                            )
+                        }
+                    }
+                }
             }
         }
     }
