@@ -11,7 +11,12 @@ import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-
+//*********
+//Andrew Serrano
+//Oregon State University
+//CS 492- Mobile Software Development **Summer 2024
+//Assignment 5: Fayetteville Treasure Hunt
+//******************
 class MobileViewModel: ViewModel() {
     //MobileUIState
     private val clues = CluesDataSource().loadClues()

@@ -18,7 +18,12 @@ import com.example.mobiletreasurehunt.data.Routes
 import com.example.mobiletreasurehunt.model.Clue
 import com.example.mobiletreasurehunt.ui.theme.MobileViewModel
 
-
+//*********
+//Andrew Serrano
+//Oregon State University
+//CS 492- Mobile Software Development **Summer 2024
+//Assignment 5: Fayetteville Treasure Hunt
+//******************
 @Composable
 fun ClueSolvedPage(
     navController: NavHostController,

@@ -3,6 +3,7 @@ package com.example.mobiletreasurehunt
 import android.annotation.SuppressLint
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,7 +46,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-
+//*********
+//Andrew Serrano
+//Oregon State University
+//CS 492- Mobile Software Development **Summer 2024
+//Assignment 5: Fayetteville Treasure Hunt
+//******************
 
 @Composable
 fun CluePage(
@@ -92,21 +98,28 @@ fun ClueCard(
     val locationClient = remember {
         LocationServices.getFusedLocationProviderClient(context)
     }
+        //need multiple remember states for dialog because hint and found it can display dialog boxes
+    //dialog for hints
+    val showHintDialog = remember { mutableStateOf(false) }
+    val currentHintIndex = remember { mutableStateOf(0) } //hints are listOf
+
+    // dialog for clue
+    val showClueDialog = remember { mutableStateOf(false) }
+
+    // hold clue description
     val descriptionHolder = stringResource(viewModelForPage.uiState.value.currentClue.clueDescription)
-    //dialog state
-    val showDialog = remember {mutableStateOf(false)}
-    //hint state
-    //val currentHintDisplayed = remember {mutableStateOf(hintNumber)}
+
     Column(modifier = modifier) {
         Text(text = "Clue " + (currentCluePosition + 1)) // Display Clue Number
         Text(text = stringResource(clue.clueDescription)) // Display Clue Text
 
         Row {
+            // "Found it" button: Check if the user's location matches the clue location
             Button(
                 onClick = {
+                    Log.i("Location", "Checking Clue from Clue PAGE: cluePosition:${viewModelForPage.uiState.value.currentCluePosition}, clueDescription: $descriptionHolder")
 
-                    Log.i("Location","Checking Clue from Clue PAGE: cluePosition:${viewModelForPage.uiState.value.currentCluePosition}, clueDescription: ${descriptionHolder}")
-                    // Start the coroutine to check the clue location
+                    // locations checks and result
                     scope.launch(Dispatchers.IO) {
                         val resultLocation = locationClient.getCurrentLocation(
                             Priority.PRIORITY_HIGH_ACCURACY,
@@ -121,21 +134,18 @@ fun ClueCard(
 
                             withContext(Dispatchers.Main) {
                                 if (result && viewModelForPage.uiState.value.isFinalClue) {
-                                    Log.i("Location","Clue values: isFinalClue ${viewModelForPage.uiState.value.isFinalClue}")
                                     Log.i("Location", "Final clue found. Navigating to completion page.")
                                     navController.navigate(Routes.TreasureHuntCompletedPage)
                                     return@withContext
                                 }
-                                if(result){
-                                    Log.i("Location","Got a match on clue location going to clue solved page")
-                                    navController.navigate(Routes.ClueSolvedPage){
+                                if (result) {
+                                    Log.i("Location", "Got a match on clue location, going to clue solved page")
+                                    navController.navigate(Routes.ClueSolvedPage) {
                                         launchSingleTop = true
                                     }
-                                }
-                                else if (!result) {
+                                } else {
                                     Log.i("Location", "Location is incorrect.")
-                                    // Show some feedback to the user
-                                    showDialog.value = true //pop-up
+                                    showClueDialog.value = true // clue loc
                                 }
                             }
                         }
@@ -145,6 +155,7 @@ fun ClueCard(
                 Text(text = "Found it")
             }
 
+            //quit button to go to the 'start page' resets clues
             Button(
                 onClick = {
                     viewModelForPage.quit()
@@ -154,46 +165,19 @@ fun ClueCard(
                 Text(text = "Quit")
             }
 
+            // "Hint" button: Show the hint dialog
             Button(
                 onClick = {
-                    // Handle hint functionality
+                    showHintDialog.value = true // hit box button
                 }
             ) {
                 Text(text = "Hint")
             }
         }
-//        //hint dialogue
-//        if (showDialog.value) {
-//            Dialog(onDismissRequest = { showDialog.value = false
-//            if (currentHintDisplayed.value < clue.clueHint.size -1)
-//            currentHintDisplayed.value +=1}) {
-//                Box(
-//                    modifier = Modifier
-//                        .background(Color.White)
-//                        .padding(16.dp)
-//                        .clip(RoundedCornerShape(8.dp))
-//                ) {
-//                    Column(
-//                        horizontalAlignment = Alignment.CenterHorizontally,
-//                        modifier = Modifier.fillMaxWidth()
-//                    ) {
-//                        Text(text = stringResource(clue.clueHint[currentHintDisplayed.value]))
-//
-//                        IconButton(onClick = { showDialog.value = false }) {
-//                            Icon(
-//                                imageVector = Icons.Default.Close,
-//                                contentDescription = "Close pop-up"
-//                            )
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
-        // Show the dialog if the state is true
-        if (showDialog.value) {
-            Dialog(onDismissRequest = { showDialog.value = false }) {
+
+        //found it - POP up wrong text
+        if (showClueDialog.value) {
+            Dialog(onDismissRequest = { showClueDialog.value = false }) {
                 Box(
                     modifier = Modifier
                         .background(Color.White)
@@ -204,9 +188,45 @@ fun ClueCard(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(text = stringResource(R.string.popup))
+                        Text(text = stringResource(R.string.popup))  // Wrong 'Found it!' text
 
-                        IconButton(onClick = { showDialog.value = false }) {
+                        IconButton(onClick = { showClueDialog.value = false }) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Close pop-up"
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        // Hint dialog
+        if (showHintDialog.value) {
+            Dialog(
+                onDismissRequest = {
+                    // Close the hint dialog
+                    showHintDialog.value = false
+                }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(Color.White)
+                        .padding(16.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        // Display the current hint
+                        Text(text = stringResource(clue.clueHint[currentHintIndex.value]))
+
+                        IconButton(onClick = {
+                            // Move to the next hint
+                            currentHintIndex.value = (currentHintIndex.value + 1) % clue.clueHint.size
+                            showHintDialog.value = false // Close dialog after showing hint
+                        }) {
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = "Close pop-up"
@@ -219,22 +239,22 @@ fun ClueCard(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ClueCardPreview() {
-    ClueCard(
-        clue = Clue(
-            clueName = R.string.circa1800,
-            clueDescription = R.string.clue1_circa1800,
-            clueHint = listOf(R.string.hint1_circa1800),
-            clueFunFact = R.string.finalcirca1800, //will act the additional info for clue solved, and info about final clue location
-            clueLocation = Pair(35.0507, -78.8863), // Coordinates for Circa 1800 pair-double
-            imageResourceID = R.drawable.circa1800
-        ),
-        hintNumber = 0,
-        currentCluePosition = 0, // Set a default value for the preview
-        navController = rememberNavController(),
-        modifier = Modifier,
-        viewModelForPage = MobileViewModel()
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ClueCardPreview() {
+//    ClueCard(
+//        clue = Clue(
+//            clueName = R.string.circa1800,
+//            clueDescription = R.string.clue1_circa1800,
+//            clueHint = listOf(R.string.hint1_circa1800),
+//            clueFunFact = R.string.finalcirca1800, //will act the additional info for clue solved, and info about final clue location
+//            clueLocation = Pair(35.0507, -78.8863), // Coordinates for Circa 1800 pair-double
+//            imageResourceID = R.drawable.circa1800
+//        ),
+//        hintNumber = 0,
+//        currentCluePosition = 0, // Set a default value for the preview
+//        navController = rememberNavController(),
+//        modifier = Modifier,
+//        viewModelForPage = MobileViewModel()
+//    )
+//}}}

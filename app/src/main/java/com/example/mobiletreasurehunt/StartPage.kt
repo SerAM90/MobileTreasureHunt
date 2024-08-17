@@ -12,7 +12,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.mobiletreasurehunt.data.Routes
-
+//*********
+//Andrew Serrano
+//Oregon State University
+//CS 492- Mobile Software Development **Summer 2024
+//Assignment 5: Fayetteville Treasure Hunt
+//******************
 @Composable
 fun MobileTreasureHuntRules(navController: NavController) {
     Column(

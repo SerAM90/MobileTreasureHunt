@@ -18,7 +18,12 @@ import com.example.mobiletreasurehunt.data.Routes
 import com.example.mobiletreasurehunt.ui.theme.MobileTreasureHuntTheme
 import com.example.mobiletreasurehunt.ui.theme.MobileViewModel
 
-
+//*********
+//Andrew Serrano
+//Oregon State University
+//CS 492- Mobile Software Development **Summer 2024
+//Assignment 5: Fayetteville Treasure Hunt
+//******************
 class MainActivity : ComponentActivity() {
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -34,7 +39,7 @@ class MainActivity : ComponentActivity() {
         }
         }
     }
-
+// LOCATIONS, PERMISSIONS, AND NAVIGATION
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val mobileViewModel = MobileViewModel()
