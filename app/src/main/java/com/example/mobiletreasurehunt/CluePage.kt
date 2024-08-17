@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -98,7 +99,7 @@ fun ClueCard(
     val locationClient = remember {
         LocationServices.getFusedLocationProviderClient(context)
     }
-        //need multiple remember states for dialog because hint and found it can display dialog boxes
+    //need multiple remember states for dialog because hint and found it can display dialog boxes
     //dialog for hints
     val showHintDialog = remember { mutableStateOf(false) }
     val currentHintIndex = remember { mutableStateOf(0) } //hints are listOf
@@ -107,17 +108,29 @@ fun ClueCard(
     val showClueDialog = remember { mutableStateOf(false) }
 
     // hold clue description
-    val descriptionHolder = stringResource(viewModelForPage.uiState.value.currentClue.clueDescription)
+    val descriptionHolder =
+        stringResource(viewModelForPage.uiState.value.currentClue.clueDescription)
 
-    Column(modifier = modifier) {
-        Text(text = "Clue " + (currentCluePosition + 1)) // Display Clue Number
-        Text(text = stringResource(clue.clueDescription)) // Display Clue Text
+    Box(
+        modifier = modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = "Clue " + (currentCluePosition + 1)) // Display Clue Number
+            Text(text = stringResource(clue.clueDescription)) // Display Clue Text
+        }
 
-        Row {
-            // "Found it" button: Check if the user's location matches the clue location
+        Row(modifier = modifier .align(Alignment.BottomCenter)) {
+            // "Found it!" to check user location
             Button(
                 onClick = {
-                    Log.i("Location", "Checking Clue from Clue PAGE: cluePosition:${viewModelForPage.uiState.value.currentCluePosition}, clueDescription: $descriptionHolder")
+                    Log.i(
+                        "Location",
+                        "Checking Clue from Clue PAGE: cluePosition:${viewModelForPage.uiState.value.currentCluePosition}, clueDescription: $descriptionHolder"
+                    )
 
                     // locations checks and result
                     scope.launch(Dispatchers.IO) {
@@ -134,12 +147,18 @@ fun ClueCard(
 
                             withContext(Dispatchers.Main) {
                                 if (result && viewModelForPage.uiState.value.isFinalClue) {
-                                    Log.i("Location", "Final clue found. Navigating to completion page.")
+                                    Log.i(
+                                        "Location",
+                                        "Final clue found. Navigating to completion page."
+                                    )
                                     navController.navigate(Routes.TreasureHuntCompletedPage)
                                     return@withContext
                                 }
                                 if (result) {
-                                    Log.i("Location", "Got a match on clue location, going to clue solved page")
+                                    Log.i(
+                                        "Location",
+                                        "Got a match on clue location, going to clue solved page"
+                                    )
                                     navController.navigate(Routes.ClueSolvedPage) {
                                         launchSingleTop = true
                                     }
@@ -224,7 +243,8 @@ fun ClueCard(
 
                         IconButton(onClick = {
                             // Move to the next hint
-                            currentHintIndex.value = (currentHintIndex.value + 1) % clue.clueHint.size
+                            currentHintIndex.value =
+                                (currentHintIndex.value + 1) % clue.clueHint.size
                             showHintDialog.value = false // Close dialog after showing hint
                         }) {
                             Icon(
@@ -238,6 +258,7 @@ fun ClueCard(
         }
     }
 }
+
 
 //@Preview(showBackground = true)
 //@Composable
